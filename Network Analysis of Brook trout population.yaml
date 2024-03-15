@@ -1,0 +1,414 @@
+schemaVersion: 3
+meta:
+  sourceVersionId: 694da139-95fc-44ba-9251-c8c1c8872b2a # DO NOT CHANGE - Hex uses this to match up project versions when reimporting the file
+  description: ""
+  projectId: 9e8c139e-25d1-421b-adb4-cad335be93a9 # DO NOT CHANGE - Unique ID of the project from which this file was generated
+  title: Network Analysis of Brook trout population
+  timezone: null
+  appTheme: SYS_PREF
+  codeLanguage: PYTHON
+  status: null
+  categories: []
+  castDecimalsDefault: true
+  logicQueryCacheTimeout: null
+  publishedQueryCacheTimeout: null
+  hexType: PROJECT
+projectAssets:
+  dataConnections: []
+  envVars: []
+  secrets: []
+sharedAssets:
+  secrets: []
+  vcsPackages: []
+  dataConnections: []
+  externalFileIntegrations: []
+cells:
+  - cellType: CODE
+    cellId: b3c315a9-5990-41b5-9615-437fcdad992c # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |-
+        !pip install netgraph
+        !pip install community
+  - cellType: CODE
+    cellId: 6131354c-59d4-4df2-ba60-aafb0f18cb5a # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |+
+        import pandas as pd
+        import networkx as nx
+        import numpy as np
+        import random
+        import matplotlib.pyplot as plt
+        import itertools
+        import math
+        import networkx as nx
+
+  - cellType: CODE
+    cellId: c9c3f849-65e7-4bba-b0fc-16d5aeb61aae # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |
+        Brook_population_csv = pd.read_csv("SE_BKT_SampleCounts.csv")
+  - cellType: CODE
+    cellId: d5cfa71c-623e-478b-91f4-b0b7dfd705bf # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: Brook_population_csv
+  - cellType: CODE
+    cellId: 172de247-90b0-46a5-850f-45329012b742 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |
+        Brook_population_csv['Total_YOY'] = Brook_population_csv.pass1_YOY.fillna(0) + Brook_population_csv.pass2_YOY.fillna(0) + Brook_population_csv.pass3_YOY.fillna(0)
+
+        Brook_population_csv['Total_Adult'] = Brook_population_csv.pass1_Adult.fillna(0) + Brook_population_csv.pass2_Adult.fillna(0) + Brook_population_csv.pass3_Adult.fillna(0)
+        Brook_population_csv["Color"] = ""
+  - cellType: CODE
+    cellId: 9cd106d9-dba8-4bc7-b797-5889e050ce08 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: ""
+  - cellType: CODE
+    cellId: fbaa8faf-7e15-433d-813f-4fb473bf5404 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |
+        Brook_Total_pop = Brook_population_csv.drop(Brook_population_csv.loc[:, 'pass1_YOY':'pass3_Adult'].columns, axis=1)
+  - cellType: CODE
+    cellId: f3df4873-9194-426a-92d2-9ba0c53b75e4 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |
+        Brook_Total_pop.State.unique() 
+  - cellType: CODE
+    cellId: 321df19c-5124-4f9a-9ed1-8a9a3d57ae75 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |
+        State_movement = Brook_Total_pop.convert_dtypes()
+  - cellType: CODE
+    cellId: 6b65f884-24f8-4354-bee5-67e2a769d180 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |-
+        State_movement["SampleDate"] = pd.to_datetime(State_movement["SampleDate"], format="%m/%d/%Y")
+        State_movement
+  - cellType: CODE
+    cellId: e79e9199-2a7f-427d-82e5-1de771b69fb4 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: State_movement
+  - cellType: CODE
+    cellId: c96b1e25-a9ef-4d93-b0ac-a410c42a478b # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |
+        
+        states = State_movement["State"].unique()
+        states
+  - cellType: CODE
+    cellId: abead32b-2249-4e55-8368-13661df227be # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: State_movement['year'] = pd.DatetimeIndex(State_movement['SampleDate']).year
+  - cellType: CODE
+    cellId: 2aa8cc8f-3397-4112-8001-e57d198233d1 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: print(list(State_movement['COMID'].unique()))
+  - cellType: CODE
+    cellId: a7ac96ad-c3ad-4013-80b2-bc70be88c6bb # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |
+        state_colors = {}
+
+        for state in states:
+            print(state)
+            hexadecimal = ["#"+''.join([random.choice('ABCDEF0123456789') for i in range(6)])]
+            state_colors[state] = hexadecimal
+
+        print(state_colors)
+  - cellType: CODE
+    cellId: f3597f3b-f3b7-44fa-bd9e-0af2422f08fd # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |
+        for state in states:
+            print(state)
+            print(state_colors[state])
+            State_movement["Color"] = np.where(
+            State_movement["State"] == state, state_colors[state], State_movement["Color"])
+  - cellType: CODE
+    cellId: 9562a250-3ccf-46a8-bf57-a7ff50739959 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |-
+        
+        G = nx.from_pandas_edgelist(State_movement, "Total_YOY", "State")
+
+        nx.draw(G)
+        plt.show()
+  - cellType: CODE
+    cellId: 71a81297-6a67-4bf7-9870-3a725d62eaae # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: years = State_movement['year'].unique()
+  - cellType: CODE
+    cellId: 6a10b8df-7ab1-43bd-b315-104bb6016a8e # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: ""
+  - cellType: CODE
+    cellId: da29d02d-9462-4b89-9438-71cdd0da6fe8 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |+
+        temp1_graph = nx.Graph()
+        def node_creation(graph,df):
+            nodes = list(df['Total_YOY'])
+            for node in nodes:
+                graph.add_node(node)
+            for longitude in list(df['Longitude']):
+                graph.add_node(longitude)
+            for latitude in list(df['Latitude']):
+                graph.add_node(latitude)
+            print(node)
+
+  - cellType: CODE
+    cellId: afbf3751-f9be-4312-9e8a-5ecd1362aeb8 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |-
+        def initial_edge_creation(graph, df):
+            for node in graph.nodes:
+                if df["Total_YOY"].eq(node).any():
+                    longitude = df["Longitude"].loc[df["Total_YOY"] == node].values[0]
+                    latitude = df["Latitude"].loc[df["Total_YOY"] == node].values[0]
+                    color = df["Color"].loc[df["Total_YOY"] == node].values[0]
+                    comid = df["COMID"].loc[df["Total_YOY"] == node].values[0]
+                    size = df["Stream_Pop_YOY"].loc[df["Total_YOY"] == node].values[0]
+                    stream = df["StreamName"].loc[df["Total_YOY"]== node].values[0]
+                    year = df["SampleDate"].loc[df["Total_YOY"]== node].values[0]
+                    graph.add_edge(node, longitude)
+                    graph.add_edge(node, latitude)
+                    nx.set_node_attributes(graph, {node: color}, "color")
+                    nx.set_node_attributes(graph, {node: comid}, "comid")
+                    nx.set_node_attributes(graph, {node: size}, "size")
+                    nx.set_node_attributes(graph, {node: stream}, "stream")
+
+
+                if df["Latitude"].eq(node).any():
+                    longitude = df["Longitude"].loc[df["Latitude"] == node].values[0]
+                    color = df["Color"].loc[df["Latitude"] == node].values[0]
+                    comid = df["COMID"].loc[df["Latitude"] == node].values[0]
+
+                    graph.add_edge(node, longitude)
+                    #graph.add_edge(node, latitude)
+                    nx.set_node_attributes(graph, {node: color}, "color")
+                    nx.set_node_attributes(graph, {node: comid}, "comid")
+
+                if df["Longitude"].eq(node).any():
+                    #longitude = df["Longitude"].loc[df["Longitude"] == node].values[0]
+                    latitude = df["Latitude"].loc[df["Longitude"] == node].values[0]
+                    color = df["Color"].loc[df["Longitude"] == node].values[0]
+                    comid = df["COMID"].loc[df["Longitude"] == node].values[0]
+
+                    #graph.add_edge(node, longitude)
+                    graph.add_edge(node, latitude)
+                    nx.set_node_attributes(graph, {node: color}, "color")
+                    nx.set_node_attributes(graph, {node: comid}, "comid")
+  - cellType: CODE
+    cellId: db5b8b87-a388-4abe-b8d9-53a11fd09200 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: temp1_graph.nodes
+  - cellType: CODE
+    cellId: 26497222-e4b4-4336-a3c7-a59acb9be5be # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |-
+        color = nx.get_node_attributes(temp1_graph, "color")
+
+        missing_color = [node for node in temp1_graph.nodes() if node not in color]
+
+        for node in missing_color:
+            color[node] = "none"
+
+        nx.draw(
+            temp1_graph,
+            node_color=[color[node] for node in temp1_graph.nodes()],
+            with_labels= False,
+        )
+  - cellType: CODE
+    cellId: 63300983-4b67-4cec-88c4-34411e58ef7c # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: "def distance_calculation(lat1, lat2, lang1, lang2):
+
+        \    diflat = lat1 - lat2
+
+        \    diflang = lang1 - lang2
+
+        \    return math.sqrt((diflat ** 2) + (diflang ** 2))
+
+
+        def distance_edge_creation(node, nodes,df,graph):
+
+        \    closness = []
+
+        \    closness_tracker = {}
+
+        \    for i in nodes:
+
+        \        longitude = df[\"Longitude\"].loc[df[\"Total_YOY\"] == node].values[0]
+
+        \        latitude = df[\"Latitude\"].loc[df[\"Total_YOY\"] == node].values[0]
+
+        \        longitude1 = df[\"Longitude\"].loc[df[\"Total_YOY\"] == i].values[0]
+
+        \        latitude1 = df[\"Latitude\"].loc[df[\"Total_YOY\"] == i].values[0]
+
+        \        distance = distance_calculation(latitude, latitude1, longitude, longitude1)
+
+        \        closness.append(distance)
+
+        \        closness_tracker[distance] = i
+
+        \        closness_tracker1 = sorted({x: y for x, y in closness_tracker.items() if x != 0.0})
+
+        \        graph.add_edge(node, closness_tracker[closness_tracker1[0]])
+
+        \    "
+  - cellType: CODE
+    cellId: 68ed6e11-1c15-4336-95e3-b2ecc0bd2a1e # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |-
+        degree_values = [val for (node, val) in temp1_graph.degree()]
+        print(degree_values)
+        pos = nx.spring_layout(temp1_graph, k=0.2)
+        nx.draw(
+            temp1_graph,
+            pos,
+            node_color=[color[node] for node in temp1_graph.nodes()],
+            with_labels=False,
+            node_size=[v * 15 for v in degree_values],
+        )
+  - cellType: CODE
+    cellId: 500b6faf-32db-4276-b408-50b959d06c47 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |-
+        State_movement["Stream_Pop_YOY"] = ""
+        def river_pop(df,rivers):
+            for river in rivers:
+                df["Stream_Pop_YOY"].loc[df["StreamName"] == river] = (sum(df["Total_YOY"].loc[df["StreamName"] == river]))
+  - cellType: CODE
+    cellId: b00b38ac-927c-429e-a137-f1e64c6bdad8 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |-
+        def communities(Graph, df):
+            to_comunity = {}
+            for node in Graph.nodes():
+                if df["Total_YOY"].eq(node).any():
+                    to_comunity[node] = df["Color"].loc[df["Total_YOY"] == node].values[0]
+                if df["Longitude"].eq(node).any():
+                    to_comunity[node] = df["Color"].loc[df["Longitude"] == node].values[0]
+                if df["Latitude"].eq(node).any():
+                    to_comunity[node] = df["Color"].loc[df["Latitude"] == node].values[0]
+            return to_comunity
+  - cellType: CODE
+    cellId: 274d6f75-3060-4183-9e37-375bb4606be4 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |
+        for year in years:
+            print(year)
+            year_df = State_movement.loc[State_movement["year"] == year]
+            year_df = year_df.dropna(subset=["Total_YOY", "Longitude", "Latitude", "COMID"])
+            rivers = year_df["StreamName"].unique()
+            river_pop(year_df, rivers)
+
+            year_graph = nx.Graph()
+            node_creation(year_graph, year_df)
+            initial_edge_creation(year_graph, year_df)
+            nodes = [node for node in year_graph.nodes if node is not None and pd.notna(node)]
+            print(nodes)
+            if nodes:
+                for node in nodes:
+                    if node in year_df["Total_YOY"].values:
+                        try:
+                            distance_edge_creation(node, nodes, year_df, year_graph)
+                        except IndexError:
+                            continue
+            degree_values = [val for (node, val) in year_graph.degree()]
+            pos = nx.spring_layout(year_graph)
+            color = nx.get_node_attributes(year_graph, "color")
+            comid = nx.get_node_attributes(year_graph, "comid")
+
+            nx.draw(
+                year_graph,
+                pos,
+                node_color=[color.get(node, "none") for node in year_graph.nodes()],
+                width=0.1,
+                alpha=0.5,
+                with_labels=False,
+                node_size=[v * 15 for v in degree_values],
+            )
+            linefeed = chr(10)  # linefeed=
+            s = linefeed.join(nx.generate_gexf(year_graph))
+            f = open(str(year)+"graph" +".gexf", "w")
+            f.write(s)
+            f.close()
+  - cellType: CODE
+    cellId: 1c8d9e36-140f-4da3-8962-dc9c0ce380e0 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |-
+        degree_values = [val for (node, val) in temp1_graph.degree()]
+        print(degree_values)
+        pos = nx.spring_layout(temp1_graph, k=0.2)
+        nx.draw(
+            temp1_graph,
+            pos,
+            node_color=[color[node] for node in temp1_graph.nodes()],
+            with_labels=False,
+            node_size=[v * 15 for v in degree_values],
+        )
+  - cellType: CODE
+    cellId: 14c6d6d8-84a9-4623-9fa5-ee60ba501ae4 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: |2-
+            #nx.draw(
+             #   year_graph,
+              #  pos,
+               # node_color=[color.get(node, "none") for node in year_graph.nodes()],
+                #width=0.1,
+                #alpha=0.5,
+                #with_labels=False,
+                #node_size=[v * 15 for v in degree_values],
+            #)
+  - cellType: CODE
+    cellId: 059df820-56e0-4e32-a109-85edfbecdf76 # DO NOT CHANGE - Hex uses this to match up cells when reimporting the file, and detect any changes to existing cells
+    cellLabel: null
+    config:
+      source: year_graph.nodes
+appLayout:
+  visibleMetadataFields:
+    - NAME
+    - DESCRIPTION
+    - AUTHOR
+    - LAST_EDITED
+    - LAST_RUN
+    - CATEGORIES
+    - STATUS
+    - TABLE_OF_CONTENTS
+  fullWidth: false
+  tabs:
+    - name: Tab 1
+      rows: []
+sharedFilters: []
